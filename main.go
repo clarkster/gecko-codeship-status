@@ -7,6 +7,7 @@ import (
 	"github.com/leocassarani/gecko-codeship-status/geckoboard"
 	"log"
 	"net/http"
+	"os"
 	"strings"
 )
 
@@ -57,7 +58,11 @@ func main() {
 		return json
 	})
 
-	http.ListenAndServe(":9999", m)
+	port := os.Getenv("PORT")
+	if port == "" {
+		port = "80"
+	}
+	http.ListenAndServe(":"+port, m)
 }
 
 func fetchBuildStatus(projectId string, builds chan BuildStatus) {
