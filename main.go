@@ -73,8 +73,12 @@ func fetchBuildStatus(projectId string, builds chan BuildStatus) {
 		return
 	}
 
-	contentDisposition := resp.Header["Content-Disposition"][0]
-	builds <- buildStatus(contentDisposition)
+	contentDisposition := resp.Header["Content-Disposition"]
+	if len(contentDisposition) > 0 {
+		builds <- buildStatus(contentDisposition[0])
+	} else {
+		builds <- UnknownStatus
+	}
 }
 
 func buildStatus(contentDisposition string) BuildStatus {
